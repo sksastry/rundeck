@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Name='RunDeck $(var.VERSION)' Id='*'
+           UpgradeCode='4413eb42-e830-4a69-af2c-3c327f96f5e8'
+           Language='1033'
+		   Codepage='1252'
+		   Version='$(var.VERSION)'
+		   Manufacturer='rundeck.org'>
+
+    <Package Description='RunDeck Windows Installer package'
+             Comments='This is RunDeck Windows Installer database'
+             Manufacturer='rundeck.org'
+             InstallerVersion='130'
+             Compressed='yes'/>
+			 
+    <Media Id='1' Cabinet='rundeck.cab' EmbedCab='yes'/>
+	  
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+	    <Directory Id='INSTALLDIR' Name='RunDeck'/>
+      </Directory>
+    </Directory>
+
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallInitialize"/>
+    </InstallExecuteSequence>
+
+	<Feature Id='RunDeckFeature'
+	         Title='RunDeck'
+			 Display='expand'
+			 Level='1'
+	         ConfigurableDirectory='INSTALLDIR'>
+      <ComponentGroupRef Id='RunDeckComponentGroup'/>
+    </Feature>
+
+    <UIRef Id="WixUI_Mondo" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+	<WixVariable Id="WixUILicenseRtf" Value=".\LICENSE.rtf" />
+  </Product>
+</Wix>
+
