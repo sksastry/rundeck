@@ -35,25 +35,31 @@ checkwix:
 	 fi
 
 msi: checkwix msidist dist/SOURCES/stacktrace.log
-	cp LICENSE.rtf dist/SOURCES ;\
+	echo "java -jar \"%~dp0/rundeck-launcher-${VERSION}.jar\"" > dist/SOURCES/rundeck.cmd
+	cp LICENSE.rtf dist/SOURCES
+	cp rundeck.ico dist
 	cd dist/SOURCES ;\
 	heat.exe dir "." -nologo \
 	  -var var.SOURCES \
 	  -gg -scom -sreg -sfrag -srd \
 	  -dr INSTALLDIR \
 	  -cg RunDeckComponentGroup \
-	  -out ../FileFragment.wxs ;\
+	  -out ../rundeck-files.wxs ;\
 	candle.exe -nologo \
 	  -dSOURCES=. \
-	  -dVERSION=1.3.0 \
+	  -dVERSION=1.4.0 \
 	  -out ../ \
-	  ../FileFragment.wxs ../../rundeck.wxs ;\
+      ../../rundeck.wxs \
+      ../../rundeck-dialogs.wxs \
+      ../rundeck-files.wxs ;\
 	light.exe -nologo \
 	  -dSOURCES=. \
-	  -dVERSION=1.3.0 \
+	  -dVERSION=1.4.0 \
 	  -out ../rundeck.msi \
 	  -ext WixUIExtension -cultures:en-us \
-	  ../rundeck.wixobj ../FileFragment.wixobj
+      ../rundeck.wixobj \
+      ../rundeck-dialogs.wixobj \
+      ../rundeck-files.wixobj
 
 msidist:
 	@mkdir -p dist/SOURCES
@@ -71,11 +77,11 @@ dist/SOURCES/stacktrace.log:
 	echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"; \
 	read -n1 -s ;\
 	done
+	@echo Proceeding...
 	@rm -f dist/SOURCES/server/config/jaas-loginmodule.conf
 	@rm -f dist/SOURCES/server/config/realm.properties
 	@rm -f dist/SOURCES/server/config/rundeck-config.properties
 	@rm -f dist/SOURCES/server/config/ssl.properties
-	@rm -f dist/SOURCES/server/exp/webapp/WEB-INF/classes/log4j.properties
 	@rm -f dist/SOURCES/etc/admin.aclpolicy
 	@rm -f dist/SOURCES/etc/console-log4j.properties
 	@rm -f dist/SOURCES/etc/framework.properties
@@ -84,6 +90,7 @@ dist/SOURCES/stacktrace.log:
 	@rm -f dist/SOURCES/etc/profile
 	@rm -f dist/SOURCES/etc/profile.bat
 	@rm -f dist/SOURCES/etc/project.properties
+	@rm -f dist/SOURCES/server/exp/webapp/WEB-INF/classes/log4j.properties
 	@touch dist/SOURCES/server/exp/webapp/WEB-INF/classes/log4j.properties
 	@find  dist/SOURCES -type f ! -path \*/server/data/\* \
 	 | xargs -n 40 truncate --size=0
@@ -101,10 +108,10 @@ dist:
 	@mkdir -p dist/SOURCES/usr/share/man/man{1,5}
 	@mkdir -p dist/SOURCES/usr/share/man/en/man{1,5}
 	@cp -R root/* dist/SOURCES
-	@cp ../docs/en/manpages/man1/*.1.gz dist/SOURCES/usr/share/man/man1
-	@cp ../docs/en/manpages/man5/*.5.gz dist/SOURCES/usr/share/man/man5
-	@cp ../docs/en/manpages/man1/*.1.gz dist/SOURCES/usr/share/man/en/man1
-	@cp ../docs/en/manpages/man5/*.5.gz dist/SOURCES/usr/share/man/en/man5
+	@-cp ../docs/en/manpages/man1/*.1.gz dist/SOURCES/usr/share/man/man1
+	@-cp ../docs/en/manpages/man5/*.5.gz dist/SOURCES/usr/share/man/man5
+	@-cp ../docs/en/manpages/man1/*.1.gz dist/SOURCES/usr/share/man/en/man1
+	@-cp ../docs/en/manpages/man5/*.5.gz dist/SOURCES/usr/share/man/en/man5
 	@cp -R ../core/build/tools/lib/*.jar dist/SOURCES/var/lib/rundeck/cli
 	@cp ../core/build/libs/rundeck-core-*.jar dist/SOURCES/var/lib/rundeck/cli
 	@cp ../rundeckapp/target/rundeck-server-*.jar dist/SOURCES/var/lib/rundeck/bootstrap	
@@ -115,3 +122,4 @@ dist:
     
 clean:
 	rm -rf target dist/
+
