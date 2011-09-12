@@ -36,8 +36,6 @@ checkwix:
 
 msi: checkwix msidist dist/SOURCES/stacktrace.log
 	echo "java -jar \"%~dp0/rundeck-launcher-${VERSION}.jar\"" > dist/SOURCES/rundeck.cmd
-	cp LICENSE.rtf dist/SOURCES
-	cp rundeck.ico dist
 	cd dist/SOURCES ;\
 	heat.exe dir "." -nologo \
 	  -var var.SOURCES \
@@ -92,8 +90,11 @@ dist/SOURCES/stacktrace.log:
 	@rm -f dist/SOURCES/etc/project.properties
 	@rm -f dist/SOURCES/server/exp/webapp/WEB-INF/classes/log4j.properties
 	@touch dist/SOURCES/server/exp/webapp/WEB-INF/classes/log4j.properties
-	@find  dist/SOURCES -type f ! -path \*/server/data/\* \
+	@find  dist/SOURCES -type f \
+                            ! -path \*/server/data/\* \
+                            ! -name rundeck-launcher-\*.jar \
 	 | xargs -n 40 truncate --size=0
+
 
 dist:
 	@mkdir -p dist/RPMS/noarch

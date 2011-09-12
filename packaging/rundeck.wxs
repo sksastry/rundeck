@@ -14,7 +14,7 @@
 
 	<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
 
-    <Icon Id="rundeck.ico" SourceFile="$(var.SOURCES)\..\rundeck.ico"/>
+    <Icon Id="rundeck.ico" SourceFile="$(var.SOURCES)\..\..\rundeck.ico"/>
     <Property Id="ARPPRODUCTICON" Value="rundeck.ico" />
 
     <Media Id='1' Cabinet='rundeck.cab' EmbedCab='yes'/>
@@ -139,7 +139,11 @@
     
     <UIRef Id="RunDeck_WixUI_InstallUI" />
     <UIRef Id="WixUI_ErrorProgressText" />
-    <WixVariable Id="WixUILicenseRtf" Value=".\LICENSE.rtf" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.SOURCES)\..\..\LICENSE.rtf" />
+    <!-- 493 by 58 pixels, this bitmap will appear at the top of all but the first page of the installer -->
+    <!--WixVariable Id="WixUIBannerBmp" Value="$(var.SOURCES)\..\..\rundeck-banner.bmp"/-->
+    <!-- 493 by 312 pixels, this bitmap will appear on the first page of the installer.-->
+    <!--WixVariable Id="WixUIDialogBmp" Value="$(var.SOURCES)\..\..\rundeck-dialog.bmp"/-->
 	
     <UI>
       <InstallUISequence></InstallUISequence>
